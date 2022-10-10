@@ -1,6 +1,7 @@
 package racingcar.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +15,10 @@ public class Winners {
 
     public void addWinner(CarName winner) {
         winnerList.add(winner);
+    }
+
+    public List<CarName> getWinnerList() {
+        return Collections.unmodifiableList(winnerList);
     }
 
     public void noticeWinner() {
