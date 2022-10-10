@@ -1,7 +1,6 @@
 package racingcar.model;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Map.Entry;
 import lombok.extern.slf4j.Slf4j;
 import racingcar.utils.RandomUtils;
@@ -10,20 +9,20 @@ import racingcar.utils.RandomUtils;
 public class Racing {
     private final UserInput userInput;
     private Winners winners;
-    private final Map<String, StringBuilder> results;
+    private final RacingResults racingResults;
     private int round = 0;
     private static final int MOVING_FORWARD = 4;
 
-    public Racing(UserInput userInput, Map<String, StringBuilder> results) {
+    public Racing(UserInput userInput, RacingResults racingResults) {
         this.userInput = userInput;
-        this.results = results;
+        this.racingResults = racingResults;
     }
 
     public void run() {
-        userInput.getCarNames().getCarNameSet().forEach(car -> results.put(car, new StringBuilder()));
+        racingResults.initialize(userInput.getCarNames());
         log.info("실행결과");
         while (round < userInput.getTryNumber()) {
-            results.forEach(this::tryRound);
+            racingResults.getRacingResultsMap().forEach(this::tryRound);
             log.info("\n");
             round++;
         }
@@ -31,9 +30,8 @@ public class Racing {
         winners.noticeWinner();
     }
 
-    private void tryRound(String car, StringBuilder value) {
-        results.put(car, value.append(tryGoOrStop()));
-        log.info(car + " : " + value);
+    private void tryRound(String carName, StringBuilder racingResult) {
+        racingResults.addRacingResult(carName, racingResult.append(tryGoOrStop()));
     }
 
     private String tryGoOrStop() {
@@ -46,7 +44,7 @@ public class Racing {
 
     private void calculateWinners() {
         int maxValue = 0;
-        for (Entry<String, StringBuilder> entry : results.entrySet()) {
+        for (Entry<String, StringBuilder> entry : racingResults.getRacingResultsMap().entrySet()) {
             maxValue = setWinnersAndUpdateMaxValue(maxValue, entry.getKey(), entry.getValue());
         }
     }
