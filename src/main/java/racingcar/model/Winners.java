@@ -12,7 +12,7 @@ public class Winners {
         this.winnerList = new ArrayList<>(winnerList);
     }
 
-    public void add(String winner) {
+    public void addWinner(String winner) {
         winnerList.add(winner);
     }
 

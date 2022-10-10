@@ -20,7 +20,7 @@ public class Racing {
     }
 
     public void run() {
-        userInput.getCarNames().forEach(car -> results.put(car, new StringBuilder()));
+        userInput.getCarNames().getCarNameSet().forEach(car -> results.put(car, new StringBuilder()));
         log.info("실행결과");
         while (round < userInput.getTryNumber()) {
             results.forEach(this::tryRound);
@@ -57,7 +57,7 @@ public class Racing {
             winners = new Winners(new ArrayList<>());
         }
         if (maxValue == value.length()) {
-            winners.add(car);
+            winners.addWinner(car);
         }
         return maxValue;
     }
