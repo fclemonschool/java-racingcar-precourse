@@ -6,7 +6,7 @@ import racingcar.enums.InputType;
 
 @Slf4j
 public class IoUtils {
-    private static final String ERROR_PREFIX = "[ERROR]";
+    private static final String ERROR_PREFIX = "[ERROR] ";
     private static final String INVALID_NAME_MESSAGE = "입력한 이름이 올바르지 않습니다.";
     private static final String INVALID_NUMBER_MESSAGE = "시도 횟수는 숫자여야 합니다.";
 
