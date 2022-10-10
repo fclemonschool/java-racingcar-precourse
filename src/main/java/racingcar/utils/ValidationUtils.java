@@ -4,8 +4,9 @@ import java.util.regex.Pattern;
 import racingcar.enums.InputType;
 
 public class ValidationUtils {
-    private static final Pattern validSingleCarNamePattern = Pattern.compile("^[a-zA-Z]{1,5}+$");
-    private static final Pattern invalidMultipleCarNamePattern = Pattern.compile("^[^a-zA-Z,]+$");
+    private static final Pattern specialCharacterPattern = Pattern.compile("[^a-zA-Z0-9]");
+    private static final Pattern invalidSpecialCharacterPattern = Pattern.compile("[^a-zA-Z,]+");
+    private static final int MAX_NAME_LENGTH = 5;
 
     private ValidationUtils() {
     }
@@ -19,8 +20,18 @@ public class ValidationUtils {
     }
 
     private static void validateInputStringIsCarNames(String input, InputType inputType) {
-        if (!validSingleCarNamePattern.matcher(input).matches() || invalidMultipleCarNamePattern.matcher(input)
-                .matches()) {
+        if (specialCharacterPattern.matcher(input).find()) {
+            throwExceptionByCondition(invalidSpecialCharacterPattern.matcher(input).find(), inputType);
+            for (String name : input.split(",")) {
+                throwExceptionByCondition(name.length() > MAX_NAME_LENGTH, inputType);
+            }
+            return;
+        }
+        throwExceptionByCondition(input.length() > MAX_NAME_LENGTH, inputType);
+    }
+
+    private static void throwExceptionByCondition(boolean condition, InputType inputType) {
+        if (condition) {
             throw new IllegalArgumentException(IoUtils.getInvalidMessage(inputType));
         }
     }
