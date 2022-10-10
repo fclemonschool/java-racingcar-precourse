@@ -10,27 +10,28 @@ public class Racing {
     private final UserInput userInput;
     private Winners winners;
     private final RacingResults racingResults;
-    private int round = 0;
+    private final Round round;
     private static final int MOVING_FORWARD = 4;
 
-    public Racing(UserInput userInput, RacingResults racingResults) {
+    public Racing(UserInput userInput, RacingResults racingResults, Round round) {
         this.userInput = userInput;
         this.racingResults = racingResults;
+        this.round = round;
     }
 
     public void run() {
         racingResults.initialize(userInput.getCarNames());
         log.info("실행결과");
-        while (round < userInput.getTryNumber()) {
+        while (round.hasNextRound(userInput.getTryNumber().getIntTryNumber())) {
             racingResults.getRacingResultsMap().forEach(this::tryRound);
             log.info("\n");
-            round++;
+            round.nextRound();
         }
         calculateWinners();
         winners.noticeWinner();
     }
 
-    private void tryRound(String carName, StringBuilder racingResult) {
+    private void tryRound(CarName carName, StringBuilder racingResult) {
         racingResults.addRacingResult(carName, racingResult.append(tryGoOrStop()));
     }
 
@@ -44,18 +45,18 @@ public class Racing {
 
     private void calculateWinners() {
         int maxValue = 0;
-        for (Entry<String, StringBuilder> entry : racingResults.getRacingResultsMap().entrySet()) {
+        for (Entry<CarName, StringBuilder> entry : racingResults.getRacingResultsMap().entrySet()) {
             maxValue = setWinnersAndUpdateMaxValue(maxValue, entry.getKey(), entry.getValue());
         }
     }
 
-    private int setWinnersAndUpdateMaxValue(int maxValue, String car, StringBuilder value) {
+    private int setWinnersAndUpdateMaxValue(int maxValue, CarName carName, StringBuilder value) {
         if (maxValue < value.length()) {
             maxValue = value.length();
             winners = new Winners(new ArrayList<>());
         }
         if (maxValue == value.length()) {
-            winners.addWinner(car);
+            winners.addWinner(carName);
         }
         return maxValue;
     }
