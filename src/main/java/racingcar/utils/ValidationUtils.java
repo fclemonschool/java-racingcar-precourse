@@ -22,12 +22,16 @@ public class ValidationUtils {
     private static void validateInputStringIsCarNames(String input, InputType inputType) {
         if (specialCharacterPattern.matcher(input).find()) {
             throwExceptionByCondition(invalidSpecialCharacterPattern.matcher(input).find(), inputType);
-            for (String name : input.split(",")) {
-                throwExceptionByCondition(name.length() > MAX_NAME_LENGTH, inputType);
-            }
+            validateInputArrayLength(input.split(","), inputType);
             return;
         }
         throwExceptionByCondition(input.length() > MAX_NAME_LENGTH, inputType);
+    }
+
+    private static void validateInputArrayLength(String[] nameArray, InputType inputType) {
+        for (String name : nameArray) {
+            throwExceptionByCondition(name.length() > MAX_NAME_LENGTH, inputType);
+        }
     }
 
     private static void throwExceptionByCondition(boolean condition, InputType inputType) {
