@@ -1,8 +1,6 @@
 package racingcar.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +9,14 @@ import racingcar.utils.RandomUtils;
 @Slf4j
 public class Racing {
     private final UserInput userInput;
-    private List<String> winners;
-    private final Map<String, StringBuilder> results = new HashMap<>();
+    private Winners winners;
+    private final Map<String, StringBuilder> results;
     private int round = 0;
     private static final int MOVING_FORWARD = 4;
 
-    public Racing(UserInput userInput) {
+    public Racing(UserInput userInput, Map<String, StringBuilder> results) {
         this.userInput = userInput;
+        this.results = results;
     }
 
     public void run() {
@@ -29,7 +28,7 @@ public class Racing {
             round++;
         }
         calculateWinners();
-        noticeWinner();
+        winners.noticeWinner();
     }
 
     private void tryRound(String car, StringBuilder value) {
@@ -55,15 +54,11 @@ public class Racing {
     private int setWinnersAndUpdateMaxValue(int maxValue, String car, StringBuilder value) {
         if (maxValue < value.length()) {
             maxValue = value.length();
-            winners = new ArrayList<>();
+            winners = new Winners(new ArrayList<>());
         }
         if (maxValue == value.length()) {
             winners.add(car);
         }
         return maxValue;
-    }
-
-    private void noticeWinner() {
-        log.info("최종 우승자 : " + String.join(", ", winners));
     }
 }
